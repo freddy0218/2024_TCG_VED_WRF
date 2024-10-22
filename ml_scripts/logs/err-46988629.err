@@ -1,0 +1,7 @@
+[32m[I 2024-09-22 09:28:37,473][0m A new study created in memory with name: no-name-4d6335b3-7cd9-491d-a7f4-e8dc418b60dd[0m
+[32m[I 2024-09-22 09:34:33,949][0m Trial 0 finished with value: 9.596238365515749 and parameters: {'lr': 0.0008897002684913022, 'l2_lambda': 0.017725105530773375}. Best is trial 0 with value: 9.596238365515749.[0m
+[32m[I 2024-09-22 09:40:29,630][0m Trial 1 finished with value: 9.577755529195704 and parameters: {'lr': 0.00035199579002136725, 'l2_lambda': 0.01392985020471458}. Best is trial 1 with value: 9.577755529195704.[0m
+[32m[I 2024-09-22 09:46:26,098][0m Trial 2 finished with value: 9.636684845102595 and parameters: {'lr': 0.000661855501857288, 'l2_lambda': 0.012035420807616517}. Best is trial 1 with value: 9.577755529195704.[0m
+[32m[I 2024-09-22 09:52:22,120][0m Trial 3 finished with value: 9.657718752292876 and parameters: {'lr': 0.0006524052521737016, 'l2_lambda': 0.01881169707483618}. Best is trial 1 with value: 9.577755529195704.[0m
+[32m[I 2024-09-22 09:58:18,071][0m Trial 4 finished with value: 9.62202112218167 and parameters: {'lr': 0.0007602288515072131, 'l2_lambda': 0.015402090590497984}. Best is trial 1 with value: 9.577755529195704.[0m
+[32m[I 2024-09-22 10:04:14,295][0m Trial 5 finished with value: 9.58354520036819 and parameters: {'lr': 0.0009253286476668166, 'l2_lambda': 0.010717636708757524}. Best is trial 1 with value: 9.577755529195704.[0m

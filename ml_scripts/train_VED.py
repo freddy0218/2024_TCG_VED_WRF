@@ -26,19 +26,21 @@ import read_config
 # Read configuration file
 config_set = read_config.read_config('../config.ini')
 i=int(str(sys.argv[1]))
+exptype=str(sys.argv[2])
+
+startname=int(12)
 
 suffix = '/work/FAC/FGSE/IDYST/tbeucler/default/freddy0218/2024_TCG_VED_WRFsen/storage'
-PCA = read_and_write.depickle(sorted(glob.glob('../storage/proc/PCA/PCA*'))[i])
-X = read_and_write.depickle(sorted(glob.glob('../storage/proc/Xtimeseries*'))[i])
-y = read_and_write.depickle(sorted(glob.glob('../storage/proc/y*'))[i])
-X['test'] = X.pop('Xtest')
-    
-validindices = sorted(glob.glob('../storage/proc/X*pkl'))[i].split('/')[-1][12:].split('.')[0]
-LWstop = np.abs(PCA['PCA']['LW'].explained_variance_ratio_.cumsum()-float(config_set['ML_LWnumcomps'])).argmin()
-SWstop = np.abs(PCA['PCA']['SW'].explained_variance_ratio_.cumsum()-float(config_set['ML_SWnumcomps'])).argmin()
+X = read_and_write.depickle(sorted(glob.glob(f'../storage/proc/Xsmooth/{exptype}/Xtimeseries*'))[i])
+validindices = sorted(glob.glob(f'../storage/proc/Xsmooth/{exptype}/Xtimeseries*pkl'))[i].split('/')[-1][int(startname):].split('.')[0]
+
+#PCA = read_and_write.depickle(sorted(glob.glob(f'../storage/proc/PCA/{exptype}/PCAsmooth{exptype}*'+str(validindices)+'*'))[0])
+y = read_and_write.depickle(sorted(glob.glob('../storage/proc/y*'+str(validindices)+'*'))[0])
+#X['test'] = X.pop('Xtest')
+nummem = X['sizes']
 
 train_data,val_data,test_data = preproc.prepare_tensors(X,y,'No')
-batch_size = 5
+batch_size = 10
 num_workers = 2
 train_loader = torch.utils.data.DataLoader(
     dataset=train_data,
@@ -52,13 +54,15 @@ test_loader = torch.utils.data.DataLoader(
     dataset=test_data,
     batch_size=batch_size,
     shuffle=False)
-del PCA,X,y
+del X,y
 gc.collect()
     
-nummem = [0,LWstop,SWstop]
+read_and_write.save_to_pickle(nummem,suffix+f'/proc/VEDsmooth_{exptype}/'+
+                              str(sorted(glob.glob(f'../storage/proc/Xsmooth/{exptype}/Xtimeseries*pkl'))[i].split('/')[-1][int(startname):].split('.')[0])+'/losscoeff_0/'+'nummem.pkl')
 losscoeff=float(config_set['ML_losscoeff'])
 
-study = read_and_write.depickle(suffix+'/proc/VED/'+str(sorted(glob.glob('../storage/proc/X*pkl'))[i].split('/')[-1][12:].split('.')[0])+'/losscoeff_0/'+'bestparams.pkt')
+study = read_and_write.depickle(suffix+f'/proc/VEDsmooth_{exptype}/'+
+                                str(sorted(glob.glob(f'../storage/proc/Xsmooth/{exptype}/Xtimeseries*pkl'))[i].split('/')[-1][int(startname):].split('.')[0])+'/losscoeff_0/'+'bestparams.pkt')
 
 times = ['exp1a','exp1b','exp1c','exp1d','exp1e','exp1f','exp1g','exp1h','exp1i']
 for itime in tqdm(range(len(times))):
@@ -79,8 +83,11 @@ for itime in tqdm(range(len(times))):
     #read_and_proc.save_to_pickle('../tmp/torch_try/ts/'+str(expname)+'/0/'+'losses'+str(splitnum)+'_'+str(expname)+'3dnonln_1115_'+str(times[i])+'.pkt',losses,'PICKLE')
     if losscoeff==1.0:
         losscoeff2 = int(losscoeff)
-        torch.save(models,suffix+'/proc/VED/'+str(sorted(glob.glob('../storage/proc/X*pkl'))[i].split('/')[-1][12:].split('.')[0])+'/losscoeff_0/'+'modelstest_vae_'+str(times[itime])+'.pk')
-        read_and_write.save_to_pickle(losses,suffix+'/proc/VED/'+str(sorted(glob.glob('../storage/proc/X*pkl'))[i].split('/')[-1][12:].split('.')[0])+'/losscoeff_0/'+'lossestest_vae_'+str(times[itime])+'.pkt')
+        torch.save(models,suffix+f'/proc/VEDsmooth_{exptype}/'+str(sorted(glob.glob(f'../storage/proc/Xsmooth/{exptype}/Xtimeseries*pkl'))[i].split('/')[-1][int(startname):].split('.')[0])+'/losscoeff_0/'+'modelstest_vae_'+str(times[itime])+'.pk')
+        read_and_write.save_to_pickle(losses,suffix+f'/proc/VEDsmooth_{exptype}/'+str(sorted(glob.glob(f'../storage/proc/Xsmooth/{exptype}/Xtimeseries*pkl'))[i].split('/')[-1][int(startname):].split('.')[0])+'/losscoeff_0/'+'lossestest_vae_'+str(times[itime])+'.pkt')
     else:
         torch.save(models,filepath+'vae/losscoeff_'+str(losscoeff)+'/'+str(splitnum)+'/modelstest'+str(splitnum)+'_vae_'+str(times[itime])+'.pk')
-        read_and_write.save_to_pickle(filepath+'vae/losscoeff_'+str(losscoeff)+'/'+str(splitnum)+'/lossestest'+str(splitnum)+'_vae_'+str(times[itime])+'.pkt',losses,'PICKLE')  
+        
+#read_and_write.save_to_pickle(nummem,suffix+'/proc/VED/'+str(sorted(glob.glob('../storage/proc/X*pkl'))[i].split('/')[-1][12:].split('.')[0])+'/losscoeff_0/'+'nummem.pkl')
+
+#read_and_write.save_to_pickle(filepath+'vae/losscoeff_'+str(losscoeff)+'/'+str(splitnum)+'/lossestest'+str(splitnum)+'_vae_'+str(times[itime])+'.pkt',losses,'PICKLE')  

@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/work/FAC/FGSE/IDYST/tbeucler/default/freddy0218/2024_TCG_VED_WRFsen/ml_scripts/train_resumeVED.py", line 157, in <module>
+    resume_training(imemb,None,vae_losscoeff,None,5,2).continue_training(config_set=config_set,exp=exp,scheduler_lr=[1e-14,5e-10],early_stopper=early_stopper)
+  File "/work/FAC/FGSE/IDYST/tbeucler/default/freddy0218/2024_TCG_VED_WRFsen/ml_scripts/train_resumeVED.py", line 72, in continue_training
+    original_model.load_state_dict(model_dict)
+  File "/work/FAC/FGSE/IDYST/tbeucler/default/freddy0218/miniconda3/envs/fred_workenv/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1482, in load_state_dict
+    raise RuntimeError('Error(s) in loading state_dict for {}:\n\t{}'.format(
+RuntimeError: Error(s) in loading state_dict for VAE:
+	size mismatch for encoder1.fc_mean.weight: copying a param with shape torch.Size([1, 70]) from checkpoint, the shape in current model is torch.Size([1, 124]).
+	size mismatch for encoder1.fc_logvar.weight: copying a param with shape torch.Size([1, 70]) from checkpoint, the shape in current model is torch.Size([1, 124]).
+	size mismatch for encoder2.fc_mean.weight: copying a param with shape torch.Size([1, 25]) from checkpoint, the shape in current model is torch.Size([1, 48]).
+	size mismatch for encoder2.fc_logvar.weight: copying a param with shape torch.Size([1, 25]) from checkpoint, the shape in current model is torch.Size([1, 48]).
